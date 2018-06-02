@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
+using Ookii.Dialogs;
 
 namespace conanpatcher
 {
@@ -192,7 +193,7 @@ namespace conanpatcher
 
         private void gameFolderBrowse_Click(object sender, EventArgs e)
         {
-            var fd = new FolderBrowserDialog();
+            var fd = new VistaFolderBrowserDialog();
             fd.ShowNewFolderButton = false;
             fd.Description = "Select Conan Exiles folder under steamapps\\common";
             var rslt = fd.ShowDialog();
