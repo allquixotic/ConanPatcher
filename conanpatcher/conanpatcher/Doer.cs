@@ -35,6 +35,7 @@ namespace conanpatcher
         {
             try
             {
+                try { Directory.CreateDirectory(SharedState.PathInfo.ModFolder); } catch (Exception) { }
                 try { File.Delete(Path.GetFullPath("rsync.log")); } catch (Exception) { }
                 String cygPath = Cygpath.Convert(SharedState.PathInfo.ModFolder);
                 var cwd = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
@@ -65,6 +66,7 @@ namespace conanpatcher
             {
                 try
                 {
+                    try { Directory.CreateDirectory(Path.Combine(SharedState.PathInfo.GameFolder, "ConanSandbox", "Mods")); } catch (Exception) { }
                     string modlistPath = Path.GetFullPath(Path.Combine(SharedState.PathInfo.GameFolder, "ConanSandbox", "Mods", "modlist.txt"));
                     File.WriteAllText(modlistPath, WebHelper.GetDocumentContents(WebRequest.Create(c.ModlistUrl)));
                 }
