@@ -1,0 +1,21 @@
+@NoPromptForPassword 1
+@ShutdownOnFailedCommand 1
+@sSteamCmdForcePlatformType windows
+login anonymous
+force_install_dir ./steam
+app_update 440900 validate
+workshop_download_item 440900 1113901982
+workshop_download_item 440900 1367454214
+workshop_download_item 440900 1210390760
+workshop_download_item 440900 862889805
+workshop_download_item 440900 1159180273
+workshop_download_item 440900 1206493209
+workshop_download_item 440900 1386982683
+workshop_download_item 440900 1369743238
+workshop_download_item 440900 1234733286
+workshop_download_item 440900 1371191181
+workshop_download_item 440900 1394962491
+workshop_download_item 440900 1374736088
+workshop_download_item 440900 1121057177
+workshop_download_item 440900 880454836
+quit

@@ -1,0 +1,9 @@
+#!/bin/bash
+pushd "${HOME}/conan"
+rm -rf ./steam/steamapps/workshop/content
+./steamcmd.sh +runscript conan_steamcmd.txt
+mkdir -p ./steam/steamapps/workshop/content/440900/Greyfalls
+find ./steam/steamapps/workshop/content/440900 -mindepth 2 -type f -print -exec mv {} ./steam/steamapps/workshop/content/440900/Greyfalls \;
+mv ./steam/steamapps/workshop/content/440900/Greyfalls .
+rm -rf ./steam/steamapps/workshop/content/440900/*
+mv ./Greyfalls ./steam/steamapps/workshop/content/440900/
