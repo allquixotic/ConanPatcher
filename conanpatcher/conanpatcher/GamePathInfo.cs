@@ -9,7 +9,7 @@ namespace conanpatcher
     public class GamePathInfo
     {
         public string GameFolder { get; private set; }
-        public string ModFolder { get; private set; }
+        public string WorkshopModFolder { get; private set; }
         public string SteamappsFolder { get; private set; }
 
         public void SetAllBasedOnGameFolder(string gameFolder, string gameId)
@@ -17,12 +17,12 @@ namespace conanpatcher
             GameFolder = Path.GetFullPath(gameFolder);
             if(String.IsNullOrWhiteSpace(GameFolder))
             {
-                ModFolder = null;
+                WorkshopModFolder = null;
                 SteamappsFolder = null;
             }
             else
             {
-                ModFolder = Path.GetFullPath(Path.Combine(gameFolder, "..", "..", "workshop", "content", gameId));
+                WorkshopModFolder = Path.GetFullPath(Path.Combine(gameFolder, "..", "..", "workshop", "content", gameId));
                 SteamappsFolder = Path.GetFullPath(Path.Combine(gameFolder, "..", ".."));
             }
         }

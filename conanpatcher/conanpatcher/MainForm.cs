@@ -10,6 +10,8 @@ using System.Net;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
 using Ookii.Dialogs;
+using System.Reflection;
+using Newtonsoft.Json;
 
 namespace conanpatcher
 {
@@ -21,6 +23,11 @@ namespace conanpatcher
         public MainForm()
         {
             InitializeComponent();
+            Version version = Assembly.GetEntryAssembly().GetName().Version;
+            if (version != null)
+            {
+                this.Text = this.Text + " " + version.ToString();
+            }
 
             //Word wrap on debug listbox
             debugLogBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
@@ -69,6 +76,8 @@ namespace conanpatcher
                 modlistUrlTxt.Text = c.ModlistUrl;
                 rsyncArgsTxt.Text = c.RsyncArgs;
                 rsyncUrlTxt.Text = c.RsyncUrl;
+                serverNameTxt.Text = c.ServerName;
+                modDirTxt.Text = c.ModPath;
             }
             gameFldTxt.Text = SharedState.PathInfo.GameFolder;
         }
@@ -85,6 +94,8 @@ namespace conanpatcher
             c.ModlistUrl = modlistUrlTxt.Text.Trim();
             c.RsyncArgs = rsyncArgsTxt.Text.Trim();
             c.RsyncUrl = rsyncUrlTxt.Text.Trim();
+            c.ServerName = serverNameTxt.Text.Trim();
+            c.ModPath = modDirTxt.Text.Trim();
             SharedState.PathInfo.SetAllBasedOnGameFolder(gameFldTxt.Text.Trim(), c.GameID);
         }
 
@@ -112,10 +123,11 @@ namespace conanpatcher
                         ((ISimpleLogger)this).Log("File " + fp + " does not exist!");
                         return;
                     }
+                    c = JsonConfigLoader.Load(File.ReadAllText(fp));
+                    this.currConfSrc.Text = "File: " + fp;
                     try
                     {
-                        c = JsonConfigLoader.Load(File.ReadAllText(fp));
-                        this.currConfSrc.Text = "File: " + fp;
+                        
                     }
                     catch(Exception errr)
                     {
@@ -223,9 +235,42 @@ namespace conanpatcher
             }
         }
 
-        private void currConfSrc_TextChanged(object sender, EventArgs e)
+        private void saveJsonBrowse_Click(object sender, EventArgs e)
         {
+            var fd = new SaveFileDialog();
+            fd.Title = "Select where to save Workshop Patcher config .JSON file";
+            fd.OverwritePrompt = true;
+            fd.FileName = "conanpatcher_config.json";
+            fd.InitialDirectory = Directory.GetCurrentDirectory();
+            var rslt = fd.ShowDialog();
+            if (rslt == DialogResult.OK)
+            {
+                loadFromTextboxesIntoConfig();
+                filePathTextBox.Text = fd.FileName;
 
+                try { File.WriteAllText(fd.FileName, JsonConvert.SerializeObject(Program.c)); } catch (Exception ex) { SharedState.Logger.Log(ex.StackTrace); }
+
+                if (!File.Exists(filePathTextBox.Text))
+                {
+                    Interaction.MsgBox(@"Error: Can't save Workshop Patcher config .JSON file at this path: '" + filePathTextBox.Text + "'. Try again.", MsgBoxStyle.OkOnly | MsgBoxStyle.SystemModal, "Conan Exiles Workshop Patcher");
+                }
+            }
+        }
+
+        private void modDirBrowse_Click(object sender, EventArgs e)
+        {
+            var fd = new VistaFolderBrowserDialog();
+            fd.ShowNewFolderButton = false;
+            fd.Description = "Select where the mods should be downloaded - must be in sync with modlist.txt!";
+            var rslt = fd.ShowDialog();
+            if (rslt == DialogResult.OK)
+            {
+                modDirTxt.Text = fd.SelectedPath;
+                if (!Directory.Exists(gameFldTxt.Text))
+                {
+                    Interaction.MsgBox(@"Error: Invalid directory: '" + gameFldTxt.Text + "'. Try again.", MsgBoxStyle.OkOnly | MsgBoxStyle.SystemModal, "Conan Exiles Workshop Patcher");
+                }
+            }
         }
     }
 }

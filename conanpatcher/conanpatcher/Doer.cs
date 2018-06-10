@@ -17,9 +17,17 @@ namespace conanpatcher
             {
                 SharedState.Logger.Log("Rsync process completed.");
             }
+            else
+            {
+                SharedState.Logger.Log("Rsync process exited with an error.");
+            }
             if(DoModlistReplace(c))
             {
                 SharedState.Logger.Log("modlist.txt process completed.");
+            }
+            else
+            {
+                SharedState.Logger.Log("modlist.txt process exited with an error.");
             }
             if(File.Exists(Path.GetFullPath("rsync.log")))
             {
@@ -31,13 +39,58 @@ namespace conanpatcher
             }
         }
 
+        //Determine if user already has any mods from modlist.txt from Steam Workshop
+        private static void CopyUsefulSteamWorkshopMods(Config c)
+        {
+            //Parse out the file names from modlist.txt (to lowercase)
+            string modlistTxt = WebHelper.GetDocumentContents(WebRequest.Create(c.ModlistUrl));
+            List<string> modFileNames = modlistTxt.Split(null).ToList();
+
+            {
+                List<string> two = new List<string>();
+                foreach (string s in modFileNames)
+                {
+                    two.Add(Path.GetFileName(s.Replace("/", @"\")).ToLower());
+                }
+                modFileNames = two;
+            }
+
+            //Gather all file names from workshop dir (to lowercase)
+            Dictionary<string, string> workshopPakFiles = new Dictionary<string, string>();
+            foreach(string file in Directory.EnumerateFiles(SharedState.PathInfo.WorkshopModFolder, "*.pak", SearchOption.AllDirectories)
+                .Union(Directory.EnumerateFiles(Path.Combine(SharedState.PathInfo.GameFolder, "ConanSandbox", "Mods"), "*.pak", SearchOption.AllDirectories)))
+            {
+                string key = Path.GetFileName(file).ToLower();
+                if (!workshopPakFiles.ContainsKey(key))
+                {
+                    workshopPakFiles.Add(key, file);
+                }
+            }
+
+            //For each file that does not exist in target ModPath, copy it over
+            foreach(string modFile in modFileNames)
+            {
+                if(!File.Exists(Path.GetFullPath(Path.Combine(c.GetAbsoluteModPath(), modFile))) 
+                    && workshopPakFiles.ContainsKey(modFile))
+                {
+                    try
+                    {
+                        string src = workshopPakFiles[modFile];
+                        string dest = Path.Combine(c.GetAbsoluteModPath(), Path.GetFileName(src));
+                        File.Copy(src, dest, false);
+                        SharedState.Logger.Log("Copied " + src + " to " + dest);
+                    } catch (Exception) { }
+                }
+            }
+        }
+
         public static bool DoRsync(Config c)
         {
             try
             {
-                try { Directory.CreateDirectory(SharedState.PathInfo.ModFolder); } catch (Exception) { }
+                try { Directory.CreateDirectory(c.GetAbsoluteModPath()); } catch (Exception) { }
                 try { File.Delete(Path.GetFullPath("rsync.log")); } catch (Exception) { }
-                String cygPath = Cygpath.Convert(SharedState.PathInfo.ModFolder);
+                String cygPath = Cygpath.Convert(c.GetAbsoluteModPath());
                 var cwd = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
                 var psi = new ProcessStartInfo();
                 string args = c.RsyncArgs + " " + c.RsyncUrl + " \"" + cygPath + "\"";
@@ -49,11 +102,16 @@ namespace conanpatcher
                 psi.UseShellExecute = false;
                 psi.ErrorDialog = true;
                 psi.WindowStyle = ProcessWindowStyle.Normal;
+
+                CopyUsefulSteamWorkshopMods(c);
+
                 var proc = Process.Start(psi);
                 proc.WaitForExit();
             }
             catch(Exception e)
             {
+                SharedState.Logger.Log(e.Message);
+                SharedState.Logger.Log(e.StackTrace);
                 return false;
             }
 

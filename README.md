@@ -50,6 +50,30 @@ Migrating from the old Steam Workshop style mod distribution is easy:
  - These scripts assume steamcmd.sh exists and runs steamcmd in the current working directory and ~/conan is where you have all this stuff.
  - For example client deployment usage see [here](https://smcnam.me/greyfalls-conanpatcher.zip)
  
+##JSON Documentation
+
+Example JSON config file:
+
+```
+{
+	"ServerName"  : "Your Server Name",
+	"ModPath"     : "ConanSandbox\\Mods\\YourServer",
+	"GameID"      : "440900",
+	"GameName"    : "Conan Exiles",
+	"ModlistUrl"  : "https://yourserver/modlist.txt",
+	"RsyncUrl"    : "rsync://yourserver:12345/files",
+	"RsyncArgs"   : "-z --progress --verbose --checksum --delete --recursive --force --log-file=rsync.log"
+}
+```
+
+ - **ServerName:** Required. The user-friendly server name displayed in the patcher GUI to end-users. Should be short enough to fit in a small drop-down box.
+ - **ModPath:** Required. The **relative** path where your mods are located compared to the Conan Exiles base directory. Usually this should start with `ConanSandbox\\Mods`. Several things to note... First, all backslashes must be escaped by typing TWO backslashes. Second, this is NOT relative to modlist.txt, it is relative to the Conan install folder. Lastly, you should make this folder something unique that other servers are unlikely to use. Don't just chuck all your mods into `ConanSandbox\\Mods`, please! It's bad manners and will increase the likelihood of conflicts if the player plays on multiple servers that use this patcher.
+ - **GameID:** Optional. The Steam Game ID of Conan Exiles. This shouldn't be changing, but it might if they "re-release" it in the Steam backend for whatever reason. If you omit this, the source code will default to using 440900.
+ - **GameName:** Optional. The Steam Game Name of Conan Exiles. This is so we know which folder to look in in the user's `steam\steamapps\common` folder.
+ - **ModlistUrl:** Optional. The URL of the modlist.txt to download. This gets installed into the user's `Conan Exiles\ConanSandbox\Mods` folder, overwriting whatever is already there. You can use something like raw file direct links from Github Gist or Pastebin if you don't have a webserver.
+ - **RsyncUrl:** Required. The URL of the rsync server where the files are being hosted. You'll need a host, port, and share. 
+ - **RsyncArgs:** Optional. These are the custom arguments fed to the rsync process to describe to it how to process the files and download the patches/new files. The default recurses subdirectories, deletes unneeded files, does a checksum on the files before downloading, and applies server-side compression to all downloaded deltas.
+ 
 ## License
 
 **Legal Disclaimer:** This tool is in no way affiliated with or endorsed by Valve Corporation, Funcom, Microsoft, or any other corporate entity. This program is free software developed by a private individual citizen of the United States of America. It is intended for, but not exclusively limited to, entertainment purposes for working with the 2018 video game Conan Exiles for the PC platform. This tool does not compete with or in any way interfere with the Conan Exiles product, and only interacts with it in ways that are explicitly supported for hobbyist game "modification" purposes by the developers/publishers of Conan Exiles. 
