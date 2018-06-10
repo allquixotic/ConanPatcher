@@ -50,7 +50,7 @@ Migrating from the old Steam Workshop style mod distribution is easy:
  - These scripts assume steamcmd.sh exists and runs steamcmd in the current working directory and ~/conan is where you have all this stuff.
  - For example client deployment usage see [here](https://smcnam.me/greyfalls-conanpatcher.zip)
  
-##JSON Documentation
+## JSON Documentation
 
 Example JSON config file:
 
