@@ -37,6 +37,7 @@ namespace conanpatcher
         [STAThread]
         static void Main()
         {
+            c = new Config();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var mf = new MainForm();

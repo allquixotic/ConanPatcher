@@ -43,6 +43,10 @@ namespace conanpatcher
         public Config()
         {
             ModPath = SharedState.PathInfo.WorkshopModFolder;
+            GameName = defaultConanGameName;
+            GameID = defaultConanGameID;
+            ServerName = defaultServerName;
+            RsyncArgs = defaultRsyncArgs;
         }
 
         public string GetAbsoluteModPath()
@@ -51,16 +55,6 @@ namespace conanpatcher
 
             if (Path.IsPathRooted(ModPath))
             {
-                if (!(baseString.EndsWith("/") || baseString.EndsWith("\\")))
-                {
-                    baseString += "\\";
-                }
-
-                if (!(modString.EndsWith("/") || modString.EndsWith("\\")))
-                {
-                    modString += "\\";
-                }
-
                 return MakeRelativePath(baseString, modString).TrimEnd(Path.DirectorySeparatorChar);
             }
             else
@@ -69,8 +63,18 @@ namespace conanpatcher
             }
         }
 
-        private static String MakeRelativePath(String fromPath, String toPath)
+        public static String MakeRelativePath(String fromPath, String toPath)
         {
+            if (!(fromPath.EndsWith("/") || fromPath.EndsWith("\\")))
+            {
+                fromPath += "\\";
+            }
+
+            if (!(toPath.EndsWith("/") || toPath.EndsWith("\\")))
+            {
+                toPath += "\\";
+            }
+
             if (String.IsNullOrEmpty(fromPath)) throw new ArgumentNullException("fromPath");
             if (String.IsNullOrEmpty(toPath)) throw new ArgumentNullException("toPath");
 

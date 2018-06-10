@@ -46,12 +46,23 @@ namespace conanpatcher
                     currConfSrc.Text = "File: " + Path.GetFullPath(@".\" + defConfFileName);
                     loadFromConfigIntoTextboxes();
                 }
-                catch(Exception q)
+                catch (Exception q)
                 {
                     ((ISimpleLogger)this).Log("Error loading config file from default path " + defConfFileName);
                 }
-                
             }
+            else
+            {
+                try
+                {
+                    loadFromConfigIntoTextboxes();
+                }
+                catch (Exception e)
+                {
+                    ((ISimpleLogger)this).Log(e.Message + "\r\n" + e.StackTrace);
+                }
+            }
+
         }
 
         private void lst_MeasureItem(object sender, MeasureItemEventArgs e)
@@ -265,11 +276,11 @@ namespace conanpatcher
             var rslt = fd.ShowDialog();
             if (rslt == DialogResult.OK)
             {
-                modDirTxt.Text = fd.SelectedPath;
                 if (!Directory.Exists(gameFldTxt.Text))
                 {
                     Interaction.MsgBox(@"Error: Invalid directory: '" + gameFldTxt.Text + "'. Try again.", MsgBoxStyle.OkOnly | MsgBoxStyle.SystemModal, "Conan Exiles Workshop Patcher");
                 }
+                modDirTxt.Text = Config.MakeRelativePath(SharedState.PathInfo.GameFolder, fd.SelectedPath).TrimEnd(Path.DirectorySeparatorChar);
             }
         }
     }
