@@ -57,8 +57,28 @@ namespace conanpatcher
 
             //Gather all file names from workshop dir (to lowercase)
             Dictionary<string, string> workshopPakFiles = new Dictionary<string, string>();
-            foreach(string file in Directory.EnumerateFiles(SharedState.PathInfo.WorkshopModFolder, "*.pak", SearchOption.AllDirectories)
-                .Union(Directory.EnumerateFiles(Path.Combine(SharedState.PathInfo.GameFolder, "ConanSandbox", "Mods"), "*.pak", SearchOption.AllDirectories)))
+            IEnumerable<string> workshopMods, gameFolderMods;
+            string gameFolderModDir = Path.Combine(SharedState.PathInfo.GameFolder, "ConanSandbox", "Mods");
+
+            if (Directory.Exists(SharedState.PathInfo.WorkshopModFolder))
+            {
+                workshopMods = Directory.EnumerateFiles(SharedState.PathInfo.WorkshopModFolder, "*.pak", SearchOption.AllDirectories);
+            }
+            else
+            {
+                workshopMods = new List<string>();
+            }
+
+            if(Directory.Exists(gameFolderModDir))
+            {
+                gameFolderMods = Directory.EnumerateFiles(gameFolderModDir, "*.pak", SearchOption.AllDirectories);
+            }
+            else
+            {
+                gameFolderMods = new List<string>();
+            }
+
+            foreach(string file in workshopMods.Union(gameFolderMods))
             {
                 string key = Path.GetFileName(file).ToLower();
                 if (!workshopPakFiles.ContainsKey(key))
@@ -79,7 +99,7 @@ namespace conanpatcher
                         string dest = Path.Combine(c.GetAbsoluteModPath(), Path.GetFileName(src));
                         File.Copy(src, dest, false);
                         SharedState.Logger.Log("Copied " + src + " to " + dest);
-                    } catch (Exception) { }
+                    } catch (Exception) { }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
                 }
             }
         }

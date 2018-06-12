@@ -37,7 +37,7 @@ namespace conanpatcher
 
         public const string defaultConanGameID = "440900";
         public const string defaultConanGameName = "Conan Exiles";
-        public const string defaultRsyncArgs = "-z --progress --verbose --checksum --delete --recursive --force --log-file=rsync.log";
+        public const string defaultRsyncArgs = "--inplace --no-acls --no-xattrs --no-perms --no-owner --no-group  --compress --progress --verbose --checksum --delete --recursive --force --log-file=rsync.log";
         public const string defaultServerName = "Default Server";
 
         public Config()
