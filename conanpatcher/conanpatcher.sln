@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "conanpatcher", "conanpatcher\conanpatcher.csproj", "{6CA112A0-CECB-4FE8-B1B2-2FE7EFD8CD05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "conanpatcher-server", "conanpatcher-server\conanpatcher-server.csproj", "{3137F3F8-D51D-4A76-81E9-E89505E8F84E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6CA112A0-CECB-4FE8-B1B2-2FE7EFD8CD05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CA112A0-CECB-4FE8-B1B2-2FE7EFD8CD05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CA112A0-CECB-4FE8-B1B2-2FE7EFD8CD05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3137F3F8-D51D-4A76-81E9-E89505E8F84E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3137F3F8-D51D-4A76-81E9-E89505E8F84E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3137F3F8-D51D-4A76-81E9-E89505E8F84E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3137F3F8-D51D-4A76-81E9-E89505E8F84E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
